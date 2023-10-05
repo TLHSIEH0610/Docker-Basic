@@ -1,0 +1,9 @@
+version: "3"
+services:
+  redis-server:
+    image: "redis"
+  node-app:
+    # look in the current directory for a Docker file and use that to build this image
+    build: .
+    ports:
+      - "4001:8081"
