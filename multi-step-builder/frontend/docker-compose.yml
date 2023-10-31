@@ -1,0 +1,11 @@
+version: "3"
+services:
+  web:
+    build: # equal to: docker build -f Dockerfile.dev .
+      context: . # specifying where we want all the files and folders for this image to be pulled from
+      dockerfile: Dockerfile.dev # filename that's going to be used to construct the image
+    ports:
+      - "3000:3000"
+    volumes: # equal to: docker run -p 3000:3000 -v /app/node_modules -v $(pwd):app imageID
+      - /app/node_modules # do not try to map a folder up against node modules inside the container
+      - .:/app
