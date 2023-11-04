@@ -7,8 +7,7 @@ const Fib = () => {
   const [index, setIndex] = useState("");
 
   useEffect(() => {
-    fetchValues();
-    fetchIndexes();
+    refresh();
   }, []);
 
   const fetchValues = async () => {
@@ -21,12 +20,21 @@ const Fib = () => {
     setSeenIndexes(seenIndexes.data);
   };
 
+  const refresh = () => {
+    fetchValues();
+    fetchIndexes();
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await axios.post("/api/values", {
-      index,
-    });
+    await axios
+      .post("/api/values", {
+        index,
+      })
+      .then(() => {
+        refresh();
+      });
     setIndex("");
   };
 

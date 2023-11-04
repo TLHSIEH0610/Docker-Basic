@@ -7,8 +7,8 @@ const redis = require("redis");
 
 //Express
 const app = express();
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 //Postgres
 const pgClient = new Pool({
@@ -17,13 +17,17 @@ const pgClient = new Pool({
   database: keys.pgDatabase,
   password: keys.pgPassword,
   port: keys.pgPort,
+  ssl:
+    process.env.NODE_ENV !== "production"
+      ? false
+      : { rejectUnauthorized: false },
 });
 
 pgClient.on("connect", (client) => {
   //create values table
   client
     .query("CREATE TABLE IF NOT EXISTS values (number INT)")
-    .catch((err) => console.log(err));
+    .catch((err) => console.error(err));
 });
 
 //Redis
@@ -60,11 +64,15 @@ app.post("/values", async (req, res) => {
   }
 
   //save the index into redis
-  redisClient.hset("values", index, "Noting Yet!");
+  redisClient.hset("values", index, "Nothing yet!");
   //wake up the worker process
   redisPublisher.publish("insert", index);
   //save index into Postgress.the $1 is a placeholder for the value(the [index] variable) you are passing in
   pgClient.query("INSERT INTO values(number) VALUES($1)", [index]);
 
   res.send({ working: true });
+});
+
+app.listen(5000, (err) => {
+  console.log("Listening");
 });
