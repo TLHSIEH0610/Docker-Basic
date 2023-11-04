@@ -5,12 +5,7 @@ import "./App.css";
 import Fib from "./Fib";
 
 function App() {
-  return (
-    <Fib />
-    // <Router>
-    //   <Route exact path="/" component={Fib} />
-    // </Router>
-  );
+  return <Fib />;
 }
 
 export default App;
